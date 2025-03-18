@@ -1,16 +1,18 @@
 package org.jarc;
 
+import org.jarc.entity.MainCharacter;
+import org.jarc.tile.TilesManager;
+
 import javax.swing.*;
 import java.awt.*;
 
 public class GamePanel extends JPanel implements Runnable{
 
-    final int originalTileSize = 32; //pixel size of all game tiles.
-    final int upScaleFactor = 2; // scaling the original 2d assets to render on modern screens.
+    public final int originalTileSize = 32; //pixel size of all game tiles.
+    public final int upScaleFactor = 2; // scaling the original 2d assets to render on modern screens.
     final int panelBorderSpace = 2; // panel size is set with 2more pixels extra to have some space between actual content and border.
-    final int upScaledTileSize = originalTileSize * upScaleFactor;
-    final int gameRows = 10;
-    final int gameColumns = 10;
+    public final int upScaledTileSize = originalTileSize * upScaleFactor;
+    public final int gameRows = 10, gameColumns = 10;
     final int gameScreenWidth = upScaledTileSize * gameColumns;
     final int gameScreenHeight = upScaledTileSize * gameRows;
 
@@ -18,12 +20,11 @@ public class GamePanel extends JPanel implements Runnable{
 
     final UserInputHandler inputHandler = new UserInputHandler();
 
-    final int playerOriginX = 0,
-            playerOriginY = 0;
-    private int currentPlayerPosX = playerOriginX,
-            currentPlayerPosY = playerOriginY;
-    final int movementSpeed = 5; // movement gets updated by 5px on each movement update.
     final int targetFps = 60;
+
+    private TilesManager bg = new TilesManager(this);
+
+    private MainCharacter mc = new MainCharacter(this, inputHandler);
 
 
     public GamePanel(){
@@ -87,22 +88,7 @@ public class GamePanel extends JPanel implements Runnable{
 
     public void update(){
 
-        if(inputHandler.moveUp){
-
-            currentPlayerPosY = currentPlayerPosY == 0? 0 : currentPlayerPosY - movementSpeed;
-        }
-        else if(inputHandler.moveLeft){
-
-            currentPlayerPosX = currentPlayerPosX == 0? 0 : currentPlayerPosX - movementSpeed;
-        }
-        else if(inputHandler.moveDown){
-
-            currentPlayerPosY = currentPlayerPosY == gameScreenHeight ? currentPlayerPosY : currentPlayerPosY + movementSpeed;
-        }
-        else if(inputHandler.moveRight){
-
-            currentPlayerPosX = currentPlayerPosX == gameScreenWidth? currentPlayerPosX : currentPlayerPosX + movementSpeed;
-        }
+        mc.update(gameScreenWidth, gameScreenHeight);
     }
 
     public void paintComponent(Graphics graphics){
@@ -110,10 +96,9 @@ public class GamePanel extends JPanel implements Runnable{
         super.paintComponent(graphics);
 
         Graphics2D graphics2D = (Graphics2D) graphics;
-        graphics2D.setColor(Color.yellow);
-        graphics2D.drawRect(currentPlayerPosX,
-                currentPlayerPosY,
-                upScaledTileSize, upScaledTileSize);
+
+        bg.draw(graphics2D);
+        mc.draw(graphics2D);
 
         graphics2D.dispose();
     }
