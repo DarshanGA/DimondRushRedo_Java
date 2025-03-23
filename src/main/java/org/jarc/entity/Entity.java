@@ -2,7 +2,7 @@ package org.jarc.entity;
 
 public class Entity {
 
-    public int x, y, movementSpeed;
+    public int worldPosX, worldPosY, movementSpeed;
 
     public enum Directions{
 

@@ -8,23 +8,23 @@ import java.awt.*;
 
 public class GamePanel extends JPanel implements Runnable{
 
-    public final int originalTileSize = 32; //pixel size of all game tiles.
+    private final int originalTileSize = 32; //pixel size of all game tiles.
     public final int upScaleFactor = 2; // scaling the original 2d assets to render on modern screens.
     final int panelBorderSpace = 2; // panel size is set with 2more pixels extra to have some space between actual content and border.
     public final int upScaledTileSize = originalTileSize * upScaleFactor;
     public final int gameRows = 10, gameColumns = 10;
-    final int gameScreenWidth = upScaledTileSize * gameColumns;
-    final int gameScreenHeight = upScaledTileSize * gameRows;
+    public final int gameScreenWidth = upScaledTileSize * gameColumns;
+    public final int gameScreenHeight = upScaledTileSize * gameRows;
+    private boolean runLoop = true; // a flag to control game loop.
 
     private Thread gameThread;
-
     final UserInputHandler inputHandler = new UserInputHandler();
 
     final int targetFps = 60;
 
-    private TilesManager bg = new TilesManager(this);
+    public TilesManager backGroundWorld = new TilesManager(this);
 
-    private MainCharacter mc = new MainCharacter(this, inputHandler);
+    public MainCharacter mainCharacter = new MainCharacter(this, inputHandler);
 
 
     public GamePanel(){
@@ -43,6 +43,16 @@ public class GamePanel extends JPanel implements Runnable{
 
     }
 
+    public void endGameThread(){
+
+        runLoop = false;
+        try {
+            gameThread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     // this is related to thread, when we start or initiate the thread this 'run()' method will be called.
     @Override
@@ -56,7 +66,7 @@ public class GamePanel extends JPanel implements Runnable{
         int fpsCounter = 0;
 
         // we will build game loop here.
-        while(gameThread != null){
+        while(runLoop){
 
              currentTime = System.nanoTime() + drawInterval;
 
@@ -88,7 +98,7 @@ public class GamePanel extends JPanel implements Runnable{
 
     public void update(){
 
-        mc.update(gameScreenWidth, gameScreenHeight);
+        mainCharacter.update();
     }
 
     public void paintComponent(Graphics graphics){
@@ -97,8 +107,8 @@ public class GamePanel extends JPanel implements Runnable{
 
         Graphics2D graphics2D = (Graphics2D) graphics;
 
-        bg.draw(graphics2D);
-        mc.draw(graphics2D);
+        backGroundWorld.draw(graphics2D);
+        mainCharacter.draw(graphics2D);
 
         graphics2D.dispose();
     }
