@@ -12,7 +12,7 @@ public class MainCharacter extends Entity{
     
     public GamePanel gamePanel;
     public UserInputHandler inputHandler;
-    private BufferedImage leftMoveSprite, rightMoveSprite;
+    private BufferedImage leftMoveSprite, rightMoveSprite, downMoveSprite, upMoveSprite;
     private final ImageUtils imageUtils;
     public final int charScreenPosX, charScreenPosY;
     private Directions charDirection = Directions.STILL;
@@ -60,8 +60,10 @@ public class MainCharacter extends Entity{
         switch(charDirection){
 
 
-            case UP, LEFT, STILL -> placeholder = leftMoveSprite;
-            case DOWN, RIGHT -> placeholder = rightMoveSprite;
+            case LEFT, STILL -> placeholder = leftMoveSprite;
+            case RIGHT -> placeholder = rightMoveSprite;
+            case DOWN -> placeholder = downMoveSprite;
+            case UP -> placeholder = upMoveSprite;
             default -> System.out.println("Unknown direction received!");
 
         }
@@ -76,6 +78,8 @@ public class MainCharacter extends Entity{
 
             leftMoveSprite = imageUtils.getRawImageFromRes("/mc/MainChar_Left.png");
             rightMoveSprite = imageUtils.getRawImageFromRes("/mc/MainChar_Right.png");
+            downMoveSprite = imageUtils.getRawImageFromRes("/mc/MainCharClimbDown.png");
+            upMoveSprite = imageUtils.getRawImageFromRes("/mc/MainCharClimbUp.png");
         }
         catch(IOException e){
 
